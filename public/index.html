@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Timestamp Microservice</title>
+  <title>Timestamp & Request Header Parser Microservices</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,22 +16,45 @@
       width: 80%;
       max-width: 300px;
     }
+    button {
+      padding: 10px;
+      margin-top: 20px;
+    }
     .result {
       margin-top: 20px;
+    }
+    .result p {
+      font-size: 1.2em;
     }
   </style>
 </head>
 <body>
-  <h1>Timestamp Microservice</h1>
-  <input type="text" id="dateInput" placeholder="Enter a date or timestamp">
-  <button onclick="getTimestamp()">Get Timestamp</button>
+  <h1>Timestamp & Request Header Parser Microservices</h1>
 
-  <div class="result">
-    <p id="unixResult"></p>
-    <p id="utcResult"></p>
+  <!-- Timestamp Input Section -->
+  <div>
+    <h2>Timestamp Microservice</h2>
+    <input type="text" id="dateInput" placeholder="Enter a date or timestamp">
+    <button onclick="getTimestamp()">Get Timestamp</button>
+    <div class="result">
+      <p id="unixResult"></p>
+      <p id="utcResult"></p>
+    </div>
+  </div>
+
+  <!-- Request Header Parser Section -->
+  <div>
+    <h2>Request Header Parser Microservice</h2>
+    <button onclick="getRequestHeaders()">Get Request Headers</button>
+    <div class="result">
+      <p id="ipaddress"></p>
+      <p id="language"></p>
+      <p id="software"></p>
+    </div>
   </div>
 
   <script>
+    // Function to get timestamp from /api/:date
     function getTimestamp() {
       const dateInput = document.getElementById('dateInput').value;
       const apiUrl = `/api/${dateInput}`;
@@ -50,6 +73,22 @@
         .catch(error => {
           document.getElementById('unixResult').textContent = 'An error occurred.';
           document.getElementById('utcResult').textContent = '';
+        });
+    }
+
+    // Function to get request headers from /api/whoami
+    function getRequestHeaders() {
+      fetch('/api/whoami')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('ipaddress').textContent = `IP Address: ${data.ipaddress}`;
+          document.getElementById('language').textContent = `Language: ${data.language}`;
+          document.getElementById('software').textContent = `Software: ${data.software}`;
+        })
+        .catch(error => {
+          document.getElementById('ipaddress').textContent = 'Error occurred while fetching data';
+          document.getElementById('language').textContent = '';
+          document.getElementById('software').textContent = '';
         });
     }
   </script>
